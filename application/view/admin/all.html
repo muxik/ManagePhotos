@@ -1,0 +1,56 @@
+{extend name='public/admin'/}
+
+{block name='content'}
+<table class="layui-table">
+    <colgroup>
+        <col width="150">
+        <col width="200">
+        <col>
+    </colgroup>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>缩略图</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        {volist name="photoInfo" id="vo"}
+        <tr>
+            <td>{$vo.id}</td>
+            <td><a href="/uploads/{$vo.pic}" target="_blank" rel="noopener noreferrer">{$vo.pic}</a></td>
+            <td><img width="100px" src="/uploads/{$vo.pic}" alt=""></td>
+            <td>
+                <a href="javascript:;" class="layui-btn layui-btn-sm photoDel" dataid="{$vo.id}">删除</a>
+                <a href="{:url('Admin/upload',['id'=>$vo.id])}" class="layui-btn layui-btn-sm photoEdit">修改
+                </a>
+            </td>
+        </tr>
+        {/volist}
+    </tbody>
+</table>
+<script>
+    $(function () {
+        $('.photoDel').click(function () {
+            let id = $(this).attr('dataid');
+            $.ajax({
+                url: " {:url('Admin/del')}",
+                type: 'post', data: { id: id },
+                dataType: 'json',
+                beforeSend: function () {
+                    $('.loading').show()
+                }, success: function (data) {
+                    layui.use('layer', function () {
+                        l = layui.layer; if (data.code == 1) {
+                            $('.loading').hide();
+                            l.msg(data.msg, { icon: 6, time: 1800 },
+                                function () { location.href = location.href; })
+                        }
+                    });
+                }
+            });
+            return false;
+        });
+    }); </script>
+{/block}

@@ -1,0 +1,79 @@
+{extend name='public/admin'/}
+
+{block name='content'}
+<form class="layui-form">
+    <table class="layui-table">
+        <blockquote class="layui-elem-quote">
+            <h1 class="title">作品上传</h1>
+        </blockquote>
+        <tr class=" layui-form-item">
+            {if request()->param('id') }
+            <th><label for="photo" class="layui-form-label">ID:</label></th>
+            <td><input type="text" value="{:request()->param('id')}" class="layui-input" id="p_id"></td>
+            {/if}
+
+        </tr>
+
+        <tr class="layui-form-item">
+            <th><label for="pic" class="layui-form-label">选择文件：</label></th>
+            <td><input type="file" name="pic" id="pic"></td>
+        </tr>
+        <tr class="layui-form-item">
+            <td><button class="layui-btn" lay-submit lay-filter="*" id="uploadForm">立即提交</button></td>
+            <td><button type="reset" class="layui-btn layui-btn-primary">重置</button></td>
+        </tr>
+    </table>
+    <script>
+        $(function () {
+            // 隐藏 加载动画
+            $('.loading').hide();
+
+            $('#uploadForm').click(function () {
+                var formData = new FormData();
+                var file = $("#pic")[0].files[0];
+                formData.append("pic", file);
+                formData.append("id", $('#p_id').val());
+                $.ajax({
+                    url: "{:url('Admin/upload')}",
+                    type: 'POST',
+                    data: formData,
+                    // 告诉jQuery不要去处理发送的数据
+                    processData: false,
+                    // 告诉jQuery不要去设置Content-Type请求头
+                    contentType: false,
+                    beforeSend: function () {
+                        $('.loading').show();
+                    },
+                    success: function (data) {
+                        // 延时0.7秒
+                        setTimeout(function () {
+                            $("#load").remove();
+                            layui.use('layer', function () {
+                                l = layui.layer;
+                                $('.loading').hide();
+                                if (data.code == 1) {
+                                    l.msg('上传成功！', { icon: 1, time: 1500 }, function () {
+                                        location.href = data.url;
+                                    });
+                                } else {
+                                    l.open({
+                                        title: '上传失败',
+                                        content: data.msg,
+                                        icon: 5,
+                                        anim: 6
+                                    });
+                                }
+                            });
+                        }, 700); // 延时0.7秒
+
+                    },
+                    error: function (data) {
+                        $('.loading').hide();
+                    }
+                });
+                return false;
+            });
+        });
+    </script>
+</form>
+{/block}

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>MuxPhotos - 后台管理系统</title>
+    <link rel="stylesheet" href="/static/lib/layui/css/layui.css">
+    <script src="/static/lib/layui/layui.js"></script>
+    <script src="/static/lib/jquery.min.js"></script>
+    <script src="/static/lib/jquery.rotate.min.js"></script>
+
+    <style>
+        .layui-body {
+            background-color: rgb(223, 223, 199) !important;
+        }
+
+        .layui-icon {
+            font-size: 1.25em;
+            line-height: 18px;
+        }
+
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+        }
+
+        .loading .layui-icon {
+            font-size: 100px;
+        }
+    </style>
+    {block name='style'}{/block}
+</head>
+
+<body class="layui-layout-body">
+    <!-- 加载动画 -->
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header">
+            <div class="layui-logo">
+                <h2>MuxPhotos</h2>
+            </div>
+            <!-- 头部区域（可配合layui已有的水平导航） -->
+            <ul class="layui-nav layui-layout-left">
+                <li class="layui-nav-item"><a href="/">首页</a></li>
+            </ul>
+            <ul class="layui-nav layui-layout-right">
+                <li class="layui-nav-item">
+                    <a href="javascript:;">{:session('admin')}</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="">基本资料</a></dd>
+                        <dd><a href="">安全设置</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item"><a id="loginOut" href="javascript:;">退出登录</a></li>
+            </ul>
+        </div>
+
+        <div class="layui-side layui-bg-black">
+            <div class="layui-side-scroll">
+                <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+                <ul class="layui-nav layui-nav-tree" lay-filter="test">
+
+                    <li class="layui-nav-item">
+                        <a href="{:url('Admin/index')}">
+                            <em class=" layui-icon layui-icon-home"></em>
+                            主页</a>
+                    </li>
+
+                    <li class="layui-nav-item layui-nav-itemed">
+                        <a class="" href="javascript:;"><i class="layui-icon layui-icon-picture-fine"></i> 作品管理</a>
+                        <dl class="layui-nav-child">
+                            <dd><a href="{:url('Admin/all')}">作品列表</a></dd>
+                            <dd><a href="{:url('Admin/upload')}">添加作品</a></dd>
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item">
+                        <a href="javascript:;"><i class="layui-icon layui-icon-set"></i> 系统设置</a>
+                        <dl class="layui-nav-child">
+                            <dd><a href="javascript:;">关于我</a></dd>
+                        </dl>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+
+        <div class="layui-body">
+            <!-- 内容主体区域 -->
+            <div style="padding: 15px;">
+                {block name='content'}
+
+                {/block}
+                {block name='loading'}
+                <div class="loading">
+                    <div id="loading" class="layui-icon layui-icon-loading"></div>
+                </div>
+                {/block}
+            </div>
+        </div>
+
+        <div class="layui-footer">
+            <!-- 底部固定区域 -->
+            © 2020 Mux | -
+            <a href="http://www.github.com/muxik/" target="_blank" title="Muxi_k">Github.com/muxik</a>
+            - 念念不忘，必有回响
+        </div>
+    </div>
+
+
+    <script>
+        // 加载动画
+        var angle = 0;
+        setInterval(function () {
+            angle += 40;
+            $('#loading').rotate(angle);
+        }, 50);
+
+        //JavaScript代码区域
+        layui.use('element', function () {
+            var element = layui.element;
+        });
+        layui.use('form', function () {
+            var form = layui.form;
+            //各种基于事件的操作，下面会有进一步介绍
+        });
+    </script>
+</body>
+
+</html>
+
+
+<script>
+    $(function () {
+        $('.loading').hide();
+        $('#loginOut').click(function () {
+            $.ajax({
+                url: '{:url("Admin/loginOut")}',
+                type: 'post',
+                dataType: 'json',
+                success: function (res) {
+                    if (res.code == 1) {
+                        layui.use('layer', function () {
+                            layer = layui.layer
+                            layer.msg('退出成功！', { icon: 1, time: 1500 }, function () {
+                                location.href = res.url;
+                            });
+                        })
+                    }
+                }
+            });
+            return false;
+        });
+    });
+
+</script>

@@ -1,0 +1,64 @@
+{extend name='public/admin'/}
+
+{block name='style'}
+<style>
+    .title {
+        height: 60px;
+        line-height: 60px;
+        font-size: 41px;
+    }
+
+    .layui-card {
+        margin-top: 20px;
+    }
+
+    .qq {
+        margin-left: 2em;
+    }
+</style>
+{/block}
+
+{block name='content'}
+<div class="layui-container-sm">
+    <blockquote class="layui-elem-quote">
+        <h1 class="title">欢迎使用MuxPhotos管理系统</h1>
+    </blockquote>
+</div>
+<div class="layui-card">
+    <div class="layui-card-header">
+        <h2>服务器信息</h2>
+    </div>
+    <div class="layui-card-body">
+        <table class="layui-table">
+            <tr>
+                <th>服务器域名</th>
+                <td>{$Request.domain}</td>
+            </tr>
+            <tr>
+                <th>服务器IP地址</th>
+                <td>{$Request.ip}</td>
+            </tr>
+            <tr>
+                <th>服务器端口</th>
+                <td>{$Request.port}</td>
+            </tr>
+            <tr>
+                <th>作者邮箱</th>
+                <td>muxikf4@gmail.com</td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="layui-card" style="padding: 10px;">
+    <fieldset class="layui-elem-field layui-field-title">
+        <legend>帮助</legend>
+        <div class="layui-field-box">
+            <ul>
+                <li>
+                    <h3 class="qq">QQ: 669150007</h3>
+                </li>
+            </ul>
+        </div>
+    </fieldset>
+</div>
+{/block}
